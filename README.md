@@ -1,2 +1,4 @@
-# grake
-Make and manage manuscripts
+# Grake
+
+Manage and make groff manuscripts.
+
