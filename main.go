@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/TheDevtop/grake/cmd/build"
 	"github.com/TheDevtop/grake/cmd/clean"
 	"github.com/TheDevtop/grake/cmd/setup"
 )
@@ -26,7 +27,7 @@ func main() {
 	case "init":
 		setup.CmdMain()
 	case "build":
-		setup.CmdMain()
+		build.CmdMain()
 	case "clean":
 		clean.CmdMain()
 	default:
