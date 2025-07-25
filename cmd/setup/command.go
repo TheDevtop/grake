@@ -6,29 +6,32 @@ import (
 	"os"
 
 	"github.com/TheDevtop/grake/internal/conf"
+	"github.com/TheDevtop/grake/internal/defaults"
 )
 
 // Compose manuscript file from template
-func compose(gptr *conf.GrakeConfig) string {
+func compose(title, author string, columns uint) string {
 	const base = `.TL
 %s
 .AU
 %s
-.2C
+.%dC
 .SH
 Heading
 .LP
 Lorem ipsum dolor sit amet.
 `
-	return fmt.Sprintf(base, gptr.Title, gptr.Author)
+	return fmt.Sprintf(base, title, author, columns)
 }
 
 func CmdMain() {
 	// Define and parse flags
 	var (
-		flagTitle  = flag.String("t", "Title", "Specify title")
-		flagAuthor = flag.String("a", "Author Name", "Specify name of author")
-		flagFile   = flag.String("f", "main.ms", "Specify main file")
+		flagTitle  = flag.String("t", defaults.DefaultTitle, "Specify title")
+		flagAuthor = flag.String("a", defaults.DefaultAuthor, "Specify name of author")
+		flagColumn = flag.Uint("c", defaults.DefaultColumns, "Specify columns")
+		flagFile   = flag.String("f", defaults.DefaultSource, "Specify initial source file")
+		flagOutput = flag.String("o", defaults.DefaultOutput, "Specify output file")
 		flagDir    = flag.String("d", "", "Specify working directory")
 	)
 	flag.Parse()
@@ -50,6 +53,7 @@ func CmdMain() {
 	gptr.Title = *flagTitle
 	gptr.Author = *flagAuthor
 	gptr.Files = []string{*flagFile}
+	gptr.Output = *flagOutput
 
 	// Write GrakeConfig
 	if err = conf.WriteFile(gptr); err != nil {
@@ -58,10 +62,11 @@ func CmdMain() {
 	}
 
 	// Compose and write manuscript file
-	if err = os.WriteFile(*flagFile, []byte(compose(gptr)), 0644); err != nil {
+	if err = os.WriteFile(*flagFile, []byte(compose(*flagTitle, *flagAuthor, *flagColumn)), 0644); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 
+	fmt.Fprintf(os.Stdout, "Initialized: %s\n", gptr.Title)
 	os.Exit(0)
 }

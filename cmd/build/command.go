@@ -10,10 +10,7 @@ import (
 )
 
 func CmdMain() {
-	var (
-		flagFile = flag.String("o", "manuscript.pdf", "Specify output file")
-		flagDir  = flag.String("d", "", "Specify working directory")
-	)
+	var flagDir = flag.String("d", "", "Specify working directory")
 	flag.Parse()
 
 	var (
@@ -50,9 +47,11 @@ func CmdMain() {
 	}
 
 	// Write the buffer to file
-	if err = os.WriteFile(*flagFile, buf, 0644); err != nil {
+	if err = os.WriteFile(gptr.Output, buf, 0644); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+
+	fmt.Fprintf(os.Stdout, "Build: %s\n", gptr.Title)
 	os.Exit(0)
 }

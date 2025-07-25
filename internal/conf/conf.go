@@ -10,6 +10,7 @@ type GrakeConfig struct {
 	Title  string
 	Author string
 	Files  []string
+	Output string
 }
 
 const FileName = "grake.toml"
